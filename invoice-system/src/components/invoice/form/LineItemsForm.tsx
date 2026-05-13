@@ -3,7 +3,7 @@ import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { InvoiceData } from "@/types/invoice"
+import { type InvoiceData } from "@/types/invoice"
 
 export function LineItemsForm() {
   const { register, control, formState: { errors } } = useFormContext<InvoiceData>()

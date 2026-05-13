@@ -1,4 +1,4 @@
-import { InvoiceData } from "@/types/invoice"
+import { type InvoiceData } from "@/types/invoice"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { format } from "date-fns"
 import { forwardRef } from "react"

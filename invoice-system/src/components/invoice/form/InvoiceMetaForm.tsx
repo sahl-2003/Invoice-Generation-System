@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { InvoiceData } from "@/types/invoice"
+import { type InvoiceData } from "@/types/invoice"
 
 export function InvoiceMetaForm() {
   const { register, formState: { errors } } = useFormContext<InvoiceData>()

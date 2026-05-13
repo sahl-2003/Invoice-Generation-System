@@ -1,4 +1,4 @@
-import { InvoiceData } from "@/types/invoice";
+import { type InvoiceData } from "@/types/invoice";
 import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "invoice_draft";

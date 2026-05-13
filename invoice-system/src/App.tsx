@@ -8,7 +8,7 @@ import { ClientForm } from "./components/invoice/form/ClientForm"
 import { InvoiceMetaForm } from "./components/invoice/form/InvoiceMetaForm"
 import { LineItemsForm } from "./components/invoice/form/LineItemsForm"
 import { InvoicePreview } from "./components/invoice/preview/InvoicePreview"
-import { InvoiceSchema, InvoiceData } from "./types/invoice"
+import { InvoiceSchema, type InvoiceData } from "./types/invoice"
 import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
 
 import { Button } from "./components/ui/button"
@@ -35,26 +35,26 @@ function MainContent() {
   
   const methods = useForm<InvoiceData>({
     resolver: zodResolver(InvoiceSchema),
-    defaultValues: initialData,
+    defaultValues: initialData as any,
   })
 
   // Watch for changes to update local storage
-  const formData = useWatch({ control: methods.control }) as InvoiceData;
+  const formData = useWatch({ control: methods.control }) as unknown as InvoiceData;
   const printRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     methods.reset(initialData)
   }, [initialData, methods])
 
-  const onSubmit = (data: InvoiceData) => {
-    saveDraft(data)
+  const onSubmit = (data: unknown) => {
+    saveDraft(data as InvoiceData)
     alert("Draft saved to localStorage!");
   }
 
   const handleDownloadPDF = () => {
     if (!printRef.current) return
     const element = printRef.current
-    const opt = {
+    const opt: any = {
       margin:       0,
       filename:     `Invoice-${formData.invoiceNumber || 'draft'}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
@@ -92,10 +92,10 @@ function MainContent() {
             <Button variant="outline" onClick={handleClear} className="w-full sm:w-auto">
               <Trash className="mr-2 h-4 w-4" /> Clear
             </Button>
-            <Button variant="outline" onClick={methods.handleSubmit(onSubmit)} className="w-full sm:w-auto">
+            <Button type="button" variant="outline" onClick={() => methods.handleSubmit(onSubmit)()} className="w-full sm:w-auto">
               <Save className="mr-2 h-4 w-4" /> Save
             </Button>
-            <Button onClick={handleDownloadPDF} className="w-full sm:w-auto">
+            <Button type="button" onClick={handleDownloadPDF} className="w-full sm:w-auto">
               <Download className="mr-2 h-4 w-4" /> PDF
             </Button>
           </div>
