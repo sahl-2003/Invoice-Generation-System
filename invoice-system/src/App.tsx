@@ -80,8 +80,8 @@ function MainContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-      <div className="bg-white border-b shadow-sm sticky top-0 z-10 px-4 py-4 md:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/50 font-sans text-slate-900 pb-20 selection:bg-primary/20">
+      <div className="bg-white/80 backdrop-blur-lg border-b border-slate-200/50 shadow-sm sticky top-0 z-50 px-4 py-4 md:px-8 transition-all">
         <div className="mx-auto max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">Modern Invoice</h1>
@@ -107,7 +107,7 @@ function MainContent() {
           <form className="grid grid-cols-1 gap-12 lg:grid-cols-12" onSubmit={methods.handleSubmit(onSubmit)}>
             {/* Left Panel: Form */}
             <div className="lg:col-span-5 flex flex-col space-y-6">
-              <div className="rounded-xl border bg-white p-6 shadow-sm space-y-8">
+              <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-md p-6 sm:p-8 shadow-xl shadow-slate-200/40 space-y-8">
                 <BillerForm />
                 <ClientForm />
                 <InvoiceMetaForm />
@@ -117,7 +117,7 @@ function MainContent() {
 
             {/* Right Panel: Preview */}
             <div className="lg:col-span-7">
-              <div className="sticky top-32 rounded-xl border bg-white shadow-lg overflow-hidden min-h-[842px] max-w-[794px] mx-auto">
+              <div className="sticky top-32 rounded-2xl border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-2xl shadow-indigo-100/50 overflow-hidden min-h-[842px] max-w-[794px] mx-auto transition-all">
                 <InvoicePreview ref={printRef} data={formData || defaultValues} />
               </div>
             </div>

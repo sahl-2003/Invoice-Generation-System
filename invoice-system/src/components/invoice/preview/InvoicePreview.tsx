@@ -9,10 +9,10 @@ const formatCurrency = (amount: number) => {
 
 function InvoiceHeader({ data }: { data: InvoiceData }) {
   return (
-    <div className="flex flex-col sm:flex-row justify-between pb-8 border-b border-slate-200">
+    <div className="flex flex-col sm:flex-row justify-between pb-8 border-b-2 border-slate-100">
       <div className="space-y-1">
-        <h2 className="text-3xl font-bold tracking-tight text-slate-900">INVOICE</h2>
-        <p className="text-slate-500 font-medium">#{data.invoiceNumber || "INV-001"}</p>
+        <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 uppercase">INVOICE</h2>
+        <p className="text-slate-500 font-medium text-lg">#{data.invoiceNumber || "INV-001"}</p>
         <div className="mt-8 space-y-1">
           <p className="text-sm font-semibold text-slate-800">From:</p>
           <p className="text-sm font-medium">{data.billerName || "Your Company Name"}</p>
@@ -145,7 +145,7 @@ export const InvoicePreview = forwardRef<HTMLDivElement, { data: InvoiceData }>(
   return (
     <div 
       ref={ref} 
-      className="bg-white p-8 sm:p-12 w-full mx-auto shadow-sm print:shadow-none print:p-0 font-sans text-slate-800"
+      className="bg-white p-8 sm:p-12 w-full mx-auto border border-slate-200 rounded-lg shadow-sm font-sans text-slate-800 text-lg"
     >
       <InvoiceHeader data={data} />
       <InvoiceItems data={data} />
