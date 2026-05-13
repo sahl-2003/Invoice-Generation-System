@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FormProvider, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import html2pdf from "html2pdf.js"
@@ -8,8 +8,10 @@ import { ClientForm } from "./components/invoice/form/ClientForm"
 import { InvoiceMetaForm } from "./components/invoice/form/InvoiceMetaForm"
 import { LineItemsForm } from "./components/invoice/form/LineItemsForm"
 import { InvoicePreview } from "./components/invoice/preview/InvoicePreview"
+import { HistoryPage } from "./components/history/HistoryPage"
 import { InvoiceSchema, type InvoiceData } from "./types/invoice"
 import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
+import { useInvoiceHistory, type SavedInvoice } from "./hooks/useInvoiceHistory"
 
 import { Button } from "./components/ui/button"
 import { Download, Save, Trash, Settings, User, Command } from "lucide-react"
@@ -31,7 +33,9 @@ const defaultValues: InvoiceData = {
 }
 
 function MainContent() {
+  const [activeView, setActiveView] = useState<'dashboard' | 'history'>('dashboard');
   const { initialData, saveDraft, clearDraft } = useInvoiceStorage(defaultValues)
+  const { saveToHistory } = useInvoiceHistory()
   
   const methods = useForm<InvoiceData>({
     resolver: zodResolver(InvoiceSchema) as any,
@@ -47,8 +51,18 @@ function MainContent() {
   }, [initialData, methods])
 
   const onSubmit = (data: unknown) => {
-    saveDraft(data as InvoiceData)
-    alert("Draft saved to localStorage!");
+    const verifiedData = data as InvoiceData;
+    saveDraft(verifiedData);
+    saveToHistory(verifiedData);
+    alert("Invoice saved to History securely!");
+  }
+
+  const handleLoadFromHistory = (invoice: SavedInvoice) => {
+    // Strip metadata
+    const { id, savedAt, ...cleanData } = invoice;
+    methods.reset(cleanData as InvoiceData);
+    saveDraft(cleanData as InvoiceData);
+    setActiveView('dashboard');
   }
 
   const handleDownloadPDF = () => {
@@ -91,9 +105,8 @@ function MainContent() {
             <span className="text-xl font-bold tracking-tight text-slate-900">Invoify<span className="text-indigo-600">.</span></span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-            <a href="#" className="text-indigo-600 transition-colors">Dashboard</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">Templates</a>
-            <a href="#" className="hover:text-slate-900 transition-colors">History</a>
+            <button onClick={() => setActiveView('dashboard')} className={`transition-colors ${activeView === 'dashboard' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>Dashboard</button>
+            <button onClick={() => setActiveView('history')} className={`transition-colors ${activeView === 'history' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>History</button>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="rounded-full text-slate-500 hover:text-slate-900">
@@ -108,8 +121,10 @@ function MainContent() {
 
       {/* Main Context Area */}
       <main className="flex-grow w-full">
-        {/* Hero Section */}
-        <div className="bg-white border-b border-slate-200/50 px-4 pt-12 pb-8 md:px-8 relative overflow-hidden">
+        {activeView === 'dashboard' && (
+          <>
+            {/* Hero Section */}
+            <div className="bg-white border-b border-slate-200/50 px-4 pt-12 pb-8 md:px-8 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-white pointer-events-none" />
           <div className="mx-auto max-w-7xl relative flex flex-col sm:flex-row justify-between items-end gap-6">
             <div className="space-y-2">
@@ -133,27 +148,35 @@ function MainContent() {
 
         {/* Dashboard Grid */}
         <div className="mx-auto max-w-7xl p-4 md:p-8 mt-4 md:mt-8">
-        <FormProvider {...methods}>
-          <form className="grid grid-cols-1 gap-12 lg:grid-cols-12" onSubmit={methods.handleSubmit(onSubmit)}>
-            {/* Left Panel: Form */}
-            <div className="lg:col-span-5 flex flex-col space-y-6">
-              <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-md p-6 sm:p-8 shadow-xl shadow-slate-200/40 space-y-8">
-                <BillerForm />
-                <ClientForm />
-                <InvoiceMetaForm />
-                <LineItemsForm />
+          <FormProvider {...methods}>
+            <form className="grid grid-cols-1 gap-12 lg:grid-cols-12" onSubmit={methods.handleSubmit(onSubmit)}>
+              {/* Left Panel: Form */}
+              <div className="lg:col-span-5 flex flex-col space-y-6">
+                <div className="rounded-2xl border border-slate-200/60 bg-white/70 backdrop-blur-md p-6 sm:p-8 shadow-xl shadow-slate-200/40 space-y-8">
+                  <BillerForm />
+                  <ClientForm />
+                  <InvoiceMetaForm />
+                  <LineItemsForm />
+                </div>
               </div>
-            </div>
 
-            {/* Right Panel: Preview */}
-            <div className="lg:col-span-7">
-              <div className="sticky top-32 rounded-2xl border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-2xl shadow-indigo-100/50 overflow-hidden min-h-[842px] max-w-[794px] mx-auto transition-all">
-                <InvoicePreview ref={printRef} data={formData || defaultValues} />
+              {/* Right Panel: Preview */}
+              <div className="lg:col-span-7">
+                <div className="sticky top-32 rounded-2xl border border-slate-200/50 bg-white/80 backdrop-blur-sm shadow-2xl shadow-indigo-100/50 overflow-hidden min-h-[842px] max-w-[794px] mx-auto transition-all">
+                  <InvoicePreview ref={printRef} data={formData || defaultValues} />
+                </div>
               </div>
-            </div>
-          </form>
-        </FormProvider>
+            </form>
+          </FormProvider>
         </div>
+        </>
+        )}
+
+        {activeView === 'history' && (
+          <div className="mx-auto max-w-7xl p-4 md:p-8 pt-12">
+            <HistoryPage onLoadInvoice={handleLoadFromHistory} />
+          </div>
+        )}
       </main>
 
       {/* Footer */}
