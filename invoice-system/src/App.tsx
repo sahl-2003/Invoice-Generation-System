@@ -34,7 +34,7 @@ function MainContent() {
   const { initialData, saveDraft, clearDraft } = useInvoiceStorage(defaultValues)
   
   const methods = useForm<InvoiceData>({
-    resolver: zodResolver(InvoiceSchema),
+    resolver: zodResolver(InvoiceSchema) as any,
     defaultValues: initialData as any,
   })
 
