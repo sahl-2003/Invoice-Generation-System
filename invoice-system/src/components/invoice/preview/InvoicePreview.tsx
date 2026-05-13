@@ -14,15 +14,21 @@ function InvoiceHeader({ data }: { data: InvoiceData }) {
         <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 uppercase">INVOICE</h2>
         <p className="text-slate-500 font-medium text-lg">#{data.invoiceNumber || "INV-001"}</p>
         <div className="mt-8 space-y-1">
-          <p className="text-sm font-semibold text-slate-800">From:</p>
-          <p className="text-sm font-medium">{data.billerName || "Your Company Name"}</p>
-          {data.billerAddress && <p className="text-sm text-slate-500">{data.billerAddress}</p>}
+          <p className="text-sm font-medium">
+            <span className="font-semibold text-slate-800 mr-2">From:</span>
+            {data.billerName || "Your Company Name"}
+          </p>
+          {data.billerAddress && <p className="text-sm text-slate-500 whitespace-pre-wrap">{data.billerAddress}</p>}
           {data.billerEmail && <p className="text-sm text-slate-500">{data.billerEmail}</p>}
           {data.billerPhone && <p className="text-sm text-slate-500">{data.billerPhone}</p>}
         </div>
       </div>
       
-      <div className="mt-8 sm:mt-0 sm:text-right space-y-1">
+      <div className="space-y-1 text-left sm:text-right mt-8 sm:mt-0">
+        <p className="text-sm font-medium">
+          <span className="font-semibold text-slate-800 mr-2 sm:mr-0 sm:ml-2">Billed To:</span>
+          {data.clientName || "Client Name"}
+        </p>
         <div className="flex justify-end gap-12 sm:gap-4 mb-8">
           <div className="text-left sm:text-right">
             <p className="text-sm font-semibold text-slate-800">Issue Date:</p>

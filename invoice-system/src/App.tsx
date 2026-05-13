@@ -14,7 +14,7 @@ import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
 import { useInvoiceHistory, type SavedInvoice } from "./hooks/useInvoiceHistory"
 
 import { Button } from "./components/ui/button"
-import { Download, Save, Trash, Settings, User, Command } from "lucide-react"
+import { Download, Save, Trash, Command } from "lucide-react"
 
 const defaultValues: InvoiceData = {
   billerName: "",
@@ -107,14 +107,6 @@ function MainContent() {
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
             <button onClick={() => setActiveView('dashboard')} className={`transition-colors ${activeView === 'dashboard' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>Dashboard</button>
             <button onClick={() => setActiveView('history')} className={`transition-colors ${activeView === 'history' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>History</button>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="rounded-full text-slate-500 hover:text-slate-900">
-              <Settings className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200">
-              <User className="h-5 w-5" />
-            </Button>
           </div>
         </div>
       </nav>
