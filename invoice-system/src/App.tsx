@@ -14,7 +14,7 @@ import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
 import { useInvoiceHistory, type SavedInvoice } from "./hooks/useInvoiceHistory"
 
 import { Button } from "./components/ui/button"
-import { Download, Save, Trash, Command } from "lucide-react"
+import { Download, Save, Trash, Command, Menu, X } from "lucide-react"
 
 const defaultValues: InvoiceData = {
   billerName: "",
@@ -34,6 +34,7 @@ const defaultValues: InvoiceData = {
 
 function MainContent() {
   const [activeView, setActiveView] = useState<'dashboard' | 'history'>('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { initialData, saveDraft, clearDraft } = useInvoiceStorage(defaultValues)
   const { saveToHistory } = useInvoiceHistory()
   
@@ -108,7 +109,30 @@ function MainContent() {
             <button onClick={() => setActiveView('dashboard')} className={`transition-colors ${activeView === 'dashboard' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>Dashboard</button>
             <button onClick={() => setActiveView('history')} className={`transition-colors ${activeView === 'history' ? 'text-indigo-600' : 'hover:text-slate-900'}`}>History</button>
           </div>
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              {isMobileMenuOpen ? <X className="h-6 w-6 text-slate-700" /> : <Menu className="h-6 w-6 text-slate-700" />}
+            </Button>
+          </div>
         </div>
+        
+        {/* Mobile Dropdown Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200/50 bg-white/95 backdrop-blur-xl absolute w-full left-0 px-6 py-4 flex flex-col gap-4 shadow-xl z-40">
+            <button 
+              onClick={() => { setActiveView('dashboard'); setIsMobileMenuOpen(false); }} 
+              className={`text-left text-lg font-medium py-2 border-b border-slate-100 ${activeView === 'dashboard' ? 'text-indigo-600' : 'text-slate-700'}`}
+            >
+              Dashboard
+            </button>
+            <button 
+              onClick={() => { setActiveView('history'); setIsMobileMenuOpen(false); }} 
+              className={`text-left text-lg font-medium py-2 ${activeView === 'history' ? 'text-indigo-600' : 'text-slate-700'}`}
+            >
+              History
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Main Context Area */}
