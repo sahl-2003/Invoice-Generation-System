@@ -12,7 +12,7 @@ import { InvoiceSchema, type InvoiceData } from "./types/invoice"
 import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
 
 import { Button } from "./components/ui/button"
-import { Download, Save, Trash } from "lucide-react"
+import { Download, Save, Trash, Settings, User, Command } from "lucide-react"
 
 const defaultValues: InvoiceData = {
   billerName: "",
@@ -80,29 +80,59 @@ function MainContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/50 font-sans text-slate-900 pb-20 selection:bg-primary/20">
-      <div className="bg-white/80 backdrop-blur-lg border-b border-slate-200/50 shadow-sm sticky top-0 z-50 px-4 py-4 md:px-8 transition-all">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Modern Invoice</h1>
-            <p className="text-slate-500 text-sm mt-1">Create, preview, and download professional invoices</p>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-500/30 flex flex-col">
+      {/* Navigation Bar */}
+      <nav className="bg-white/80 backdrop-blur-xl border-b border-slate-200/50 sticky top-0 z-50 flex-none transition-all">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-indigo-600 text-white p-2 rounded-lg">
+              <Command className="h-5 w-5" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-900">Invoify<span className="text-indigo-600">.</span></span>
           </div>
-          
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Button variant="outline" onClick={handleClear} className="w-full sm:w-auto">
-              <Trash className="mr-2 h-4 w-4" /> Clear
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+            <a href="#" className="text-indigo-600 transition-colors">Dashboard</a>
+            <a href="#" className="hover:text-slate-900 transition-colors">Templates</a>
+            <a href="#" className="hover:text-slate-900 transition-colors">History</a>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="rounded-full text-slate-500 hover:text-slate-900">
+              <Settings className="h-5 w-5" />
             </Button>
-            <Button type="button" variant="outline" onClick={() => methods.handleSubmit(onSubmit)()} className="w-full sm:w-auto">
-              <Save className="mr-2 h-4 w-4" /> Save
-            </Button>
-            <Button type="button" onClick={handleDownloadPDF} className="w-full sm:w-auto">
-              <Download className="mr-2 h-4 w-4" /> PDF
+            <Button variant="ghost" size="icon" className="rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200">
+              <User className="h-5 w-5" />
             </Button>
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className="mx-auto max-w-7xl p-4 md:p-8 mt-4">
+      {/* Main Context Area */}
+      <main className="flex-grow w-full">
+        {/* Hero Section */}
+        <div className="bg-white border-b border-slate-200/50 px-4 pt-12 pb-8 md:px-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-white to-white pointer-events-none" />
+          <div className="mx-auto max-w-7xl relative flex flex-col sm:flex-row justify-between items-end gap-6">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Create New Invoice</h1>
+              <p className="text-slate-500 text-base md:text-lg max-w-xl">Fill out the details below to generate a professional PDF instantly. Edits are auto-saved to your draft.</p>
+            </div>
+            
+            <div className="flex items-center gap-3 w-full sm:w-auto pb-1">
+              <Button variant="outline" onClick={handleClear} className="w-full sm:w-auto rounded-xl">
+                <Trash className="mr-2 h-4 w-4" /> Clear Draft
+              </Button>
+              <Button type="button" variant="outline" onClick={() => methods.handleSubmit(onSubmit)()} className="w-full sm:w-auto rounded-xl">
+                <Save className="mr-2 h-4 w-4" /> Save
+              </Button>
+              <Button type="button" onClick={handleDownloadPDF} className="w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20 text-white">
+                <Download className="mr-2 h-4 w-4" /> Export PDF
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Dashboard Grid */}
+        <div className="mx-auto max-w-7xl p-4 md:p-8 mt-4 md:mt-8">
         <FormProvider {...methods}>
           <form className="grid grid-cols-1 gap-12 lg:grid-cols-12" onSubmit={methods.handleSubmit(onSubmit)}>
             {/* Left Panel: Form */}
@@ -123,7 +153,20 @@ function MainContent() {
             </div>
           </form>
         </FormProvider>
-      </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200/60 mt-12 py-8 flex-none">
+        <div className="mx-auto max-w-7xl px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500 font-medium">
+          <p>© 2026 Invoify Inc. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Contact Support</a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
