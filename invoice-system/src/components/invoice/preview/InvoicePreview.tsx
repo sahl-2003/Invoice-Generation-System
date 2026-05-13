@@ -25,10 +25,6 @@ function InvoiceHeader({ data }: { data: InvoiceData }) {
       </div>
       
       <div className="space-y-1 text-left sm:text-right mt-8 sm:mt-0">
-        <p className="text-sm font-medium">
-          <span className="font-semibold text-slate-800 mr-2 sm:mr-0 sm:ml-2">Billed To:</span>
-          {data.clientName || "Client Name"}
-        </p>
         <div className="flex justify-end gap-12 sm:gap-4 mb-8">
           <div className="text-left sm:text-right">
             <p className="text-sm font-semibold text-slate-800">Issue Date:</p>
@@ -45,9 +41,11 @@ function InvoiceHeader({ data }: { data: InvoiceData }) {
         </div>
 
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-800">Bill To:</p>
-          <p className="text-sm font-medium">{data.clientName || "Client Name"}</p>
-          {data.clientAddress && <p className="text-sm text-slate-500">{data.clientAddress}</p>}
+          <div className="flex justify-start sm:justify-end items-baseline gap-2 text-sm font-medium">
+            <span className="font-semibold text-slate-800">Bill To:</span>
+            <span>{data.clientName || "Client Name"}</span>
+          </div>
+          {data.clientAddress && <p className="text-sm text-slate-500 whitespace-pre-wrap">{data.clientAddress}</p>}
           {data.clientEmail && <p className="text-sm text-slate-500">{data.clientEmail}</p>}
         </div>
       </div>
