@@ -4,7 +4,7 @@ import { format } from "date-fns"
 import { forwardRef } from "react"
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+  return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(amount)
 }
 
 function InvoiceHeader({ data }: { data: InvoiceData }) {
