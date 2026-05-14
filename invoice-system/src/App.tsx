@@ -14,7 +14,7 @@ import { useInvoiceStorage } from "./hooks/useInvoiceStorage"
 import { useInvoiceHistory, type SavedInvoice } from "./hooks/useInvoiceHistory"
 
 import { Button } from "./components/ui/button"
-import { Download, Save, Trash, Command, Menu, X } from "lucide-react"
+import { Download, Save, Trash, Command, Menu, X, CheckCircle } from "lucide-react"
 
 const defaultValues: InvoiceData = {
   billerName: "",
@@ -30,6 +30,17 @@ const defaultValues: InvoiceData = {
   notes: "",
   taxRate: 0,
   discountRate: 0,
+}
+
+function incrementInvoiceNumber(invoiceNumber: string) {
+  if (!invoiceNumber) return "1";
+  const match = invoiceNumber.match(/(\d+)$/);
+  if (match) {
+    const numPart = match[1];
+    const incrementedNum = (parseInt(numPart, 10) + 1).toString().padStart(numPart.length, '0');
+    return invoiceNumber.slice(0, match.index) + incrementedNum;
+  }
+  return invoiceNumber + "-1";
 }
 
 function MainContent() {
@@ -85,6 +96,48 @@ function MainContent() {
         alert("Please fix form validation errors before exporting.")
       }
     })
+  }
+
+  const handleComplete = async () => {
+    const isValid = await methods.trigger()
+    if (!isValid) {
+      alert("Please fix form validation errors before completing.")
+      return
+    }
+
+    const currentData = methods.getValues() as InvoiceData
+
+    // 1. Save to History
+    saveToHistory(currentData)
+
+    // 2. Download PDF
+    if (printRef.current) {
+      const element = printRef.current
+      const opt: any = {
+        margin:       0,
+        filename:     `Invoice-${currentData.invoiceNumber || 'completed'}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }
+      html2pdf().set(opt).from(element).save()
+    }
+
+    // 3. Prepare next invoice details
+    const nextInvoiceNumber = incrementInvoiceNumber(currentData.invoiceNumber)
+    const nextInvoiceData: InvoiceData = {
+      ...defaultValues,
+      billerName: currentData.billerName,
+      billerAddress: currentData.billerAddress,
+      billerEmail: currentData.billerEmail,
+      billerPhone: currentData.billerPhone,
+      invoiceNumber: nextInvoiceNumber,
+    }
+
+    methods.reset(nextInvoiceData)
+    saveDraft(nextInvoiceData)
+    
+    alert(`Invoice completed! Next invoice set to ${nextInvoiceNumber}`)
   }
 
   const handleClear = () => {
@@ -148,7 +201,7 @@ function MainContent() {
               <p className="text-slate-500 text-base md:text-lg max-w-xl">Fill out the details below to generate a professional PDF instantly. Edits are auto-saved to your draft.</p>
             </div>
             
-            <div className="flex items-center gap-3 w-full sm:w-auto pb-1">
+            <div className="flex items-center gap-3 w-full sm:w-auto pb-1 flex-wrap justify-end">
               <Button variant="outline" onClick={handleClear} className="w-full sm:w-auto rounded-xl">
                 <Trash className="mr-2 h-4 w-4" /> Clear Draft
               </Button>
@@ -157,6 +210,9 @@ function MainContent() {
               </Button>
               <Button type="button" onClick={handleDownloadPDF} className="w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/20 text-white">
                 <Download className="mr-2 h-4 w-4" /> Export PDF
+              </Button>
+              <Button type="button" onClick={handleComplete} className="w-full sm:w-auto rounded-xl bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 text-white">
+                <CheckCircle className="mr-2 h-4 w-4" /> Complete
               </Button>
             </div>
           </div>
