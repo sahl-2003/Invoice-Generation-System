@@ -22,10 +22,12 @@ Invoify is a premium, high-performance web application designed for fast and pro
 ## User Interface
 
 ### 1. Dashboard & Form
-![Dashboard View](./public/assets/dashboard.png)
+<img width="1163" height="861" alt="dashboard" src="https://github.com/user-attachments/assets/36fba119-5a94-4676-a488-5105cddceb88" />
+
 
 ### 2. Invoice History
-![History View](./public/assets/history.png)
+<img width="1080" height="441" alt="history" src="https://github.com/user-attachments/assets/baaaa4b0-328d-4975-b2f2-af677789a190" />
+
 
 ## Getting Started
 
